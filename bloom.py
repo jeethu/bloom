@@ -67,7 +67,6 @@ class BloomFilter( object ) :
         }
 
     def hash( self, d ) :
-        l = []
         h_l,l = [], []
         for iv in self.ivs :
             h = hashlib.new(self.HASH_ALGO,iv)
@@ -162,7 +161,7 @@ def _rle( s ) :
     '''
     for k, g in itertools.groupby(s) :
         l = len(list(g))
-        if l < 8 :
+        if l < 11 :
             yield k*l
         else :
             yield [k,l]
