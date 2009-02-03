@@ -7,5 +7,54 @@
         <h1>Javascript bloom filter</h1>
         <script type="text/javascript" src="sha256.js"></script>
         <script type="text/javascript" src="bloom.js"></script>
+        <script type="text/javascript" src="jsunity-0.1.js"></script>
+        <script type="text/javascript">
+            (function() {
+                function bloomTestSuite() {
+                    function testUnrle() {
+                        var rle_data = [["A", 17], ["B", 8], "CCCCCC", ["D", 10], "EEEEEEEkjlfdkfkf", ["1", 8], "233333344444445555555"];
+                        data = 'AAAAAAAAAAAAAAAAABBBBBBBBCCCCCCDDDDDDDDDDEEEEEEEkjlfdkfkf11111111233333344444445555555';
+                        var decoded = BloomFilter.unrle(rle_data);
+                        assertEquals(decoded,data);
+                    }
+
+                    function testBloom() {
+                        var data = {"filter": [["0", 153], "10000100001", ["0", 35], "1", ["0", 34], "10000001", ["0", 238]], "k": 3, "m": 480};
+                        BloomFilter.prototype.sha256 = sha256_digest;
+                        var bf = new BloomFilter( data );
+                        var i=0;
+                        assertEquals(bf.empty(),false);
+                        bf.add('Jeethu Rao');
+                        assertEquals(bf.hasKey('Jeethu Rao'),true);
+                        bf.remove('Jeethu Rao');
+                        assertEquals(bf.hasKey('Jeethu Rao'),false);
+                        var data1 = {'filter':'','k':3,'m':400};
+                        var bf1 = new BloomFilter( data1 );
+                        assertEquals(bf1.empty(),true);
+                        var l = ['Jeethu Rao','Pria Chander','Thilak Raj Rao','Lakshminarayana Kamath'];
+                        for(i=0;i<l.length;i++) {
+                            bf1.add(l[i]);
+                        }
+                        assertEquals(bf1.empty(),false);
+                        for(i=0;i<l.length;i++) {
+                            assertEquals(bf1.hasKey(l[i]),true);
+                        }
+                        for(i=0;i<l.length;i++) {
+                            bf1.remove(l[i]);
+                        }
+                        for(i=0;i<l.length;i++) {
+                            assertEquals(bf1.hasKey(l[i]),false);
+                        }
+                        assertEquals(bf1.empty(),true);
+                    }
+                }
+                jsUnity.log = function (s) { 
+                    var node = document.createElement('div');
+                    node.innerHTML = s;
+                    document.body.appendChild(node);
+                };
+                var results = jsUnity.run(bloomTestSuite);
+            })();
+        </script>
     </body>
 </html>

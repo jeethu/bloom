@@ -51,7 +51,7 @@
         }
         var filter = [];
         var i;
-        if(d.hasOwnProperty('filter')) {
+        if(d.hasOwnProperty('filter')&&d.filter) {
             var min_value = d.hasOwnProperty('min_val') ? d.min_val : 0;
             var data = unrle(d.filter);
             var data_len = data.length;
@@ -77,7 +77,7 @@
                 throw "Error, incorrect filter len: " + data_len.toString();
             }
         } else {
-            for(i=0;i<m;i++) {
+            for(i=0;i<this.m;i++) {
                 filter.push(0);
             }
         }
@@ -90,7 +90,7 @@
         this.n_bytes = Math.ceil(n_bits/8.0);
     };
 
-    BloomFilter.prototype.sha256 = sha256_digest;
+    // BloomFilter.prototype.sha256 = ???;
 
     BloomFilter.prototype.hexToInt = function( s ) {
         var v = 0;
@@ -166,28 +166,25 @@
         return this._remove( hash, 0 );
     };
 
+    function _filter_sum( that ) {
+        var s=0,filter=that.filter;
+        for(var i=0,j=that.m;i<j;i++) {
+            if(filter[i]) {
+                s+=1;
+            }
+        }
+        return s;
+    };
+
     BloomFilter.prototype.empty = function() {
+        return _filter_sum(this)==0;
     };
 
     BloomFilter.prototype.full = function() {
+        return _filter_sum(this)==this.m;
     };
 
-    function test_bloom() {
-        var data = {"filter": [["0", 153], "10000100001", ["0", 35], "1", ["0", 34], "10000001", ["0", 238]], "k": 3, "m": 480};
-        var bf = new BloomFilter( data );
-        console.log(bf.hash("Hello World"));
-        console.log(bf.hash("Jeethu Rao"));
-        bf.add('Jeethu Rao');
-        bf.remove('Jeethu Rao');
-    }
+    BloomFilter.unrle = unrle;
 
-    function test_unrle() {
-        var rle_data = [["A", 17], ["B", 8], "CCCCCC", ["D", 10], "EEEEEEEkjlfdkfkf", ["1", 8], "233333344444445555555"];
-        data = 'AAAAAAAAAAAAAAAAABBBBBBBBCCCCCCDDDDDDDDDDEEEEEEEkjlfdkfkf11111111233333344444445555555';
-        var decoded = unrle(rle_data);
-        return decoded==data;
-    }
-    console.log("Test");
-    console.log(test_unrle());
-    test_bloom();
+    window.BloomFilter = BloomFilter;
 })();
