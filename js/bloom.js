@@ -90,6 +90,7 @@
         this.n_bytes = Math.ceil(n_bits/8.0);
     };
 
+    // Set this either with a JS implementation or the native implementation from Firefox.
     // BloomFilter.prototype.sha256 = ???;
 
     BloomFilter.prototype.hexToInt = function( s ) {
@@ -143,8 +144,8 @@
         }
     };
 
-    BloomFilter.prototype._remove = function( hash, cnt ) {
-        var i=0,j = hash.length, filter=this.filter;
+    _remove = function( that, hash, cnt ) {
+        var i=0,j = hash.length, filter=that.filter;
         for(;i<j;i++) {
             if(filter[hash[i]]) {
                 filter[hash[i]] -= 1;
@@ -158,12 +159,12 @@
                 return true;
             }
         }
-        return this._remove( hash, cnt+1 );
+        return _remove( that, hash, cnt+1 );
     };
 
     BloomFilter.prototype.remove = function( value ) {
         var hash = this.hash(value);
-        return this._remove( hash, 0 );
+        return _remove( this, hash, 0 );
     };
 
     function _filter_sum( that ) {

@@ -10,7 +10,11 @@
         <script type="text/javascript" src="jsunity-0.1.js"></script>
         <script type="text/javascript">
             (function() {
+                BloomFilter.prototype.sha256 = sha256_digest;
+
                 function bloomTestSuite() {
+                    var data = {"filter": [["0", 153], "10000100001", ["0", 35], "1", ["0", 34], "10000001", ["0", 238]], "k": 3, "m": 480};
+
                     function testUnrle() {
                         var rle_data = [["A", 17], ["B", 8], "CCCCCC", ["D", 10], "EEEEEEEkjlfdkfkf", ["1", 8], "233333344444445555555"];
                         data = 'AAAAAAAAAAAAAAAAABBBBBBBBCCCCCCDDDDDDDDDDEEEEEEEkjlfdkfkf11111111233333344444445555555';
@@ -18,9 +22,17 @@
                         assertEquals(decoded,data);
                     }
 
+                    function testHash() {
+                        var bf = new BloomFilter(data);
+                        var h = bf.hash('Jeethu Rao');
+                        var l = [12,133,45];
+                        assertEquals(h.length,l.length);
+                        for(var i=0;i<l.length;i++) {
+                            assertEquals(h[i],l[i]);
+                        }
+                    }
+
                     function testBloom() {
-                        var data = {"filter": [["0", 153], "10000100001", ["0", 35], "1", ["0", 34], "10000001", ["0", 238]], "k": 3, "m": 480};
-                        BloomFilter.prototype.sha256 = sha256_digest;
                         var bf = new BloomFilter( data );
                         var i=0;
                         assertEquals(bf.empty(),false);
@@ -48,8 +60,14 @@
                         assertEquals(bf1.empty(),true);
                     }
                 }
-                jsUnity.log = function (s) { 
+                jsUnity.log = function(s) { 
                     var node = document.createElement('div');
+                    node.innerHTML = s;
+                    document.body.appendChild(node);
+                };
+                jsUnity.error = function(s) {
+                    var node = document.createElement('div');
+                    node.style.color = 'red';
                     node.innerHTML = s;
                     document.body.appendChild(node);
                 };
