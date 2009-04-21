@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 '''
-A simple counting bloom filter implementation using the MD5 hash function.
+A simple counting bloom filter implementation using the SHA256 hash function.
 -- Jeethu Rao <jeethu@jeethurao.com>
 '''
 import array
@@ -156,7 +156,7 @@ REVERSE_HEX_MAP = dict(zip(HEX_MAP,range(16)))
 def _rle( s ) :
     '''
     Simple RLE to encode on wire data
-    If the run length is less than 6 chars,
+    If the run length is less than 11 chars,
     its rather more efficient to use the string.
     '''
     for k, g in itertools.groupby(s) :
