@@ -9,7 +9,10 @@ import os
 import itertools
 import math
 from string import hexdigits
-import simplejson
+try :
+    import json
+except ImportError :
+    import simplejson as json
 
 class BloomFilter( object ) :
     HASH_ALGO = 'sha256'
@@ -143,11 +146,11 @@ class BloomFilter( object ) :
         return cls( d['m'],d['k'],ivs,filter )
 
     def toJSON( self ) :
-        return simplejson.dumps(self.serialize())
+        return json.dumps(self.serialize())
 
     @classmethod
     def fromJSON( cls, s ) :
-        d = simplejson.loads(s)
+        d = json.loads(s)
         return cls.unserialize( d )
 
 HEX_MAP         = list('0123456789ABCDEF')
