@@ -175,10 +175,10 @@
             }
         }
         return s;
-    };
+    }
 
     BloomFilter.prototype.empty = function() {
-        return _filter_sum(this)==0;
+        return _filter_sum(this)===0;
     };
 
     BloomFilter.prototype.full = function() {
